@@ -3,6 +3,8 @@
 > **⚠️ UNOFFICIAL IMPLEMENTATION — USE AT YOUR OWN RISK**
 >
 > This is an unofficial ACP implementation that wraps agy via a pseudo-TTY. It is not endorsed by or affiliated with Google or the Antigravity CLI team. Use only in trusted environments. The bridge may break if agy's behavior changes in future versions.
+>
+> **How it works**: This bridge uses the official `agy` binary with standard CLI flags (`--print`, `--continue`, `--dangerously-skip-permissions`). No reverse engineering, exploits, or protocol manipulation. It simply provides an ACP stdio interface to agy's existing print mode.
 
 ACP (Agent Client Protocol) stdio bridge for [agy](https://github.com/google-antigravity/antigravity-cli) (Antigravity CLI).
 
@@ -182,6 +184,8 @@ agy-acp-bridge/
 - ⚠️ **UNOFFICIAL IMPLEMENTATION** — This is not an official ACP implementation. May break if agy changes.
 - ⚠️ **Auto-approves tool calls** — `--dangerously-skip-permissions` bypasses agy's permission prompts
 - ⚠️ **No authentication** — ACP `initialize` returns empty `authMethods`
+- ✅ **No reverse engineering** — Uses official agy binary with standard CLI flags only
+- ✅ **No protocol manipulation** — Simply wraps agy's existing `--print` mode with ACP stdio interface
 - ✅ **No credential leakage** — pty wrapper prevents agy from reading user input
 - ✅ **Process isolation** — Each bridge process is isolated with its own pty
 
