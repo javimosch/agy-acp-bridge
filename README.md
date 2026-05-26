@@ -1,5 +1,9 @@
 # agy-acp-bridge
 
+> **⚠️ UNOFFICIAL IMPLEMENTATION — USE AT YOUR OWN RISK**
+>
+> This is an unofficial ACP implementation that wraps agy via a pseudo-TTY. It is not endorsed by or affiliated with Google or the Antigravity CLI team. Use only in trusted environments. The bridge may break if agy's behavior changes in future versions.
+
 ACP (Agent Client Protocol) stdio bridge for [agy](https://github.com/google-antigravity/antigravity-cli) (Antigravity CLI).
 
 **Problem**: agy does not support ACP natively ([Issue #31](https://github.com/google-antigravity/antigravity-cli/issues/31)) and silently drops stdout in non-TTY contexts ([Issue #76](https://github.com/google-antigravity/antigravity-cli/issues/76)).
@@ -175,12 +179,13 @@ agy-acp-bridge/
 
 ## Security Considerations
 
+- ⚠️ **UNOFFICIAL IMPLEMENTATION** — This is not an official ACP implementation. May break if agy changes.
 - ⚠️ **Auto-approves tool calls** — `--dangerously-skip-permissions` bypasses agy's permission prompts
 - ⚠️ **No authentication** — ACP `initialize` returns empty `authMethods`
 - ✅ **No credential leakage** — pty wrapper prevents agy from reading user input
 - ✅ **Process isolation** — Each bridge process is isolated with its own pty
 
-**Recommendation**: Use in trusted environments only. Do not expose to untrusted networks.
+**Recommendation**: Use in trusted environments only. Do not expose to untrusted networks. This is a temporary workaround until agy adds official ACP support.
 
 ---
 
@@ -235,9 +240,11 @@ Each bridge process has its own session store. Use a single long-running process
 
 ## Alternatives
 
-- **Wait for official ACP support** — agy Issue #31 is open and actively discussed
+- **Wait for official ACP support** — agy Issue #31 is open and actively discussed (recommended)
 - **professional-ALFIE fork** — Has `--json` support but unofficial
 - **acpc + other agents** — Use acpc with ACP-compatible agents (Claude Code, OpenCode, etc.)
+
+**Note**: This bridge is a temporary workaround. Consider switching to official ACP support when available.
 
 ---
 
