@@ -57,6 +57,11 @@ mem - id1 id2 id3               # delete multiple
 - **Tags**: `agy-acp-bridge`, `models`, `fix`
 - **Content**: agy-acp-bridge model customization: Added 'model' parameter to session/new request to select agy models. Available models: Gemini 3.5 Flash (Medium/High/Low), Gemini 3.1 Pro (High/Low), Claude Sonnet 4.6 (Thinking), Claude Opus 4.6 (Thinking), GPT-OSS 120B (Medium). Usage: include model in session/new params. Claude Opus 4.6 fix: auto-fallback from --print to --prompt-interactive for Thinking models that return empty output in print mode. All 8 models tested successfully with 2+2 question.
 
+### Zed Editor Configuration
+- **ID**: `2--HQfLZL0M8`
+- **Tags**: `zed`, `acp`, `agy-acp-bridge`, `configuration`
+- **Content**: Zed editor ACP configuration for agy-acp-bridge: Added to ~/.config/zed/settings.json under agent_servers section. Configuration: {"agy": {"type": "custom", "command": "/home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge", "args": ["acp"], "env": {}}} Usage: Open Zed Agent Panel (Cmd-? or Ctrl-?), click + to create new thread, select 'agy' from dropdown. Binary path: /home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge, executable (2.3MB). Configuration follows same pattern as existing tau agent in settings.
+
 ## Memory Best Practices
 
 1. **Tag consistently** — Use lowercase, descriptive tags like `prefs`, `api`, `deploy`, `db`

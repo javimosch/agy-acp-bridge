@@ -159,6 +159,28 @@ Usage:
 universe-agent-acp-client --command "/path/to/agy-acp-bridge/agy-acp-bridge" --args "acp" "what is 2+2?"
 ```
 
+#### Zed Editor
+
+Zed has native ACP support. Add to `~/.config/zed/settings.json`:
+
+```json
+{
+  "agent_servers": {
+    "agy": {
+      "type": "custom",
+      "command": "/path/to/agy-acp-bridge/agy-acp-bridge",
+      "args": ["acp"],
+      "env": {}
+    }
+  }
+}
+```
+
+Usage:
+1. Open Zed Agent Panel: `Cmd-?` (macOS) or `Ctrl-?` (Windows/Linux)
+2. Click `+` to create new thread
+3. Select `agy` from agent dropdown
+
 ### Model Selection
 
 The bridge supports custom model selection via the `session/new` `model` parameter. Available models can be listed with `agy models`:
