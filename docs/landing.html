@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>agy-acp-bridge - ACP stdio bridge for agy Antigravity CLI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-white text-gray-900 font-sans antialiased">
+    <div id="app" class="max-w-4xl mx-auto px-6">
+        <header class="py-32 text-center">
+            <h1 class="text-5xl font-serif tracking-tight mb-4 text-gray-900">agy-acp-bridge</h1>
+            <p class="text-xl text-gray-500 mb-10">ACP stdio bridge for agy Antigravity CLI</p>
+            <a href="#installation" class="btn btn-neutral">Get Started</a>
+        </header>
+
+        <section id="features" class="py-20 border-b border-gray-200">
+            <h2 class="text-3xl font-serif tracking-tight mb-8">Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div v-for="feature in features" :key="feature.title" class="card bg-white border border-gray-200 hover:shadow-sm transition-shadow">
+                    <div class="card-body">
+                        <h3 class="card-title text-lg">{{ feature.title }}</h3>
+                        <p class="text-gray-500 text-sm">{{ feature.description }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="py-20 border-b border-gray-200">
+            <h2 class="text-3xl font-serif tracking-tight mb-8">Architecture</h2>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-10 text-center">
+                <code class="text-gray-500">ACP Client → agy-acp-bridge → agy (via pty)</code>
+            </div>
+            <p class="mt-6 text-gray-500">
+                The bridge wraps agy's --print mode via a pseudo-terminal, exposing it as an ACP-compliant stdio server. This enables agy to work with any ACP client without modifications.
+            </p>
+        </section>
+
+        <section id="usage" class="py-20 border-b border-gray-200">
+            <h2 class="text-3xl font-serif tracking-tight mb-8">Usage</h2>
+            <p class="text-gray-500 mb-6">
+                Configure your ACP client to launch the bridge:
+            </p>
+            <div class="mockup-code bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <pre><code>{
+  "command": "/path/to/agy-acp-bridge",
+  "args": ["acp"]
+}</code></pre>
+            </div>
+            <div class="mt-6 flex gap-2">
+                <span class="badge badge-info">acpx</span>
+                <span class="badge badge-success">universe-agent-acp-client</span>
+            </div>
+        </section>
+
+        <section id="installation" class="py-20">
+            <h2 class="text-3xl font-serif tracking-tight mb-8">Installation</h2>
+            <div class="mockup-code bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <pre><code>cd ~/ai/agy-acp-bridge
+./build.sh</code></pre>
+            </div>
+            <p class="mt-4 text-gray-500">
+                Binary output: agy-acp-bridge (2.3 MB)
+            </p>
+        </section>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    features: [
+                        {
+                            title: 'ACP Protocol Support',
+                            description: 'Full JSON-RPC 2.0 stdio server with initialize, session/new, and session/prompt methods. Compatible with any ACP client.'
+                        },
+                        {
+                            title: 'Model Selection',
+                            description: 'Support for 8 agy models including Gemini 3.5 Flash, Gemini 3.1 Pro, Claude Sonnet 4.6, Claude Opus 4.6, and GPT-OSS 120B.'
+                        },
+                        {
+                            title: 'Claude Opus Fix',
+                            description: 'Automatic fallback from --print to --prompt-interactive for Thinking models that don\'t work with print mode. 100% model compatibility.'
+                        },
+                        {
+                            title: 'ACP Client Compatibility',
+                            description: 'Works with acpx, universe-agent-acp-client, and other ACP clients. Supports both standard and simplified message formats.'
+                        },
+                        {
+                            title: 'Pseudo-TTY Wrapper',
+                            description: 'Solves agy\'s non-TTY output issue using creack/pty. Ensures reliable output capture in all environments.'
+                        },
+                        {
+                            title: 'Session Continuity',
+                            description: 'Single-session support with --continue flag for conversation continuity across multiple prompts.'
+                        }
+                    ]
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
