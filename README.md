@@ -170,11 +170,22 @@ Zed has native ACP support. Add to `~/.config/zed/settings.json`:
       "type": "custom",
       "command": "/path/to/agy-acp-bridge/agy-acp-bridge",
       "args": ["acp"],
-      "env": {}
+      "env": {},
+      "default_model": "Claude Sonnet 4.6 (Thinking)"
     }
   }
 }
 ```
+
+Available default models:
+- `Claude Sonnet 4.6 (Thinking)` (recommended)
+- `Claude Opus 4.6 (Thinking)`
+- `Gemini 3.5 Flash (Medium)`
+- `Gemini 3.5 Flash (High)`
+- `Gemini 3.5 Flash (Low)`
+- `Gemini 3.1 Pro (High)`
+- `Gemini 3.1 Pro (Low)`
+- `GPT-OSS 120B (Medium)`
 
 Usage:
 1. Open Zed Agent Panel: `Cmd-?` (macOS) or `Ctrl-?` (Windows/Linux)

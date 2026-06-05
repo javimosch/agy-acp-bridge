@@ -60,7 +60,12 @@ mem - id1 id2 id3               # delete multiple
 ### Zed Editor Configuration
 - **ID**: `2--HQfLZL0M8`
 - **Tags**: `zed`, `acp`, `agy-acp-bridge`, `configuration`
-- **Content**: Zed editor ACP configuration for agy-acp-bridge: Added to ~/.config/zed/settings.json under agent_servers section. Configuration: {"agy": {"type": "custom", "command": "/home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge", "args": ["acp"], "env": {}}} Usage: Open Zed Agent Panel (Cmd-? or Ctrl-?), click + to create new thread, select 'agy' from dropdown. Binary path: /home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge, executable (2.3MB). Configuration follows same pattern as existing tau agent in settings.
+- **Content**: Zed editor ACP configuration for agy-acp-bridge: Added to ~/.config/zed/settings.json under agent_servers section. Configuration: {"agy": {"type": "custom", "command": "/home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge", "args": ["acp"], "env": {}, "default_model": "Claude Sonnet 4.6 (Thinking)"}} Usage: Open Zed Agent Panel (Cmd-? or Ctrl-?), click + to create new thread, select 'agy' from dropdown. Binary path: /home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge, executable (2.3MB). Configuration follows same pattern as existing tau agent in settings.
+
+### Zed Default Model Update
+- **ID**: `_An7-VpxBn8r`
+- **Tags**: `zed`, `agy-acp-bridge`, `default-model`, `configuration`
+- **Content**: Updated Zed agy configuration with default_model: Set to 'Claude Sonnet 4.6 (Thinking)' in ~/.config/zed/settings.json. This model was chosen based on smoke test results showing good performance (6.7s average response time) and reliability. Users can change default_model in settings to any of the 8 available agy models. Configuration now: {"type": "custom", "command": "/home/jarancibia/ai/agy-acp-bridge/agy-acp-bridge", "args": ["acp"], "env": {}, "default_model": "Claude Sonnet 4.6 (Thinking)"}
 
 ## Memory Best Practices
 
