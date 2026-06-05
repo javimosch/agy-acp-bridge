@@ -31,7 +31,19 @@ type RunResult struct {
 // RunPrompt sends a prompt to agy via pty and returns the full response.
 // If sess.HasHistory is true, --continue is passed to resume the last conversation.
 func RunPrompt(sess *Session, prompt string) RunResult {
-	args := buildArgs(sess, prompt)
+	// First attempt with --print mode
+	result := runPromptWithMode(sess, prompt, false)
+	
+	// If we got empty output and this is a Thinking model, retry with --prompt-interactive
+	if result.Output == "" && strings.Contains(sess.Model, "Thinking") {
+		result = runPromptWithMode(sess, prompt, true)
+	}
+	
+	return result
+}
+
+func runPromptWithMode(sess *Session, prompt string, useInteractive bool) RunResult {
+	args := buildArgs(sess, prompt, useInteractive)
 
 	cmd := exec.Command(agyBinary, args...)
 	cmd.Dir = sess.Cwd
@@ -61,8 +73,24 @@ func RunPrompt(sess *Session, prompt string) RunResult {
 }
 
 // buildArgs constructs the agy argument list for a prompt invocation.
-func buildArgs(sess *Session, prompt string) []string {
+func buildArgs(sess *Session, prompt string, useInteractive bool) []string {
+	if useInteractive {
+		// Use --prompt-interactive for models that don't work with --print
+		args := []string{"--dangerously-skip-permissions", "--prompt-interactive", prompt}
+		if sess.Model != "" {
+			args = append([]string{"--model", sess.Model}, args...)
+		}
+		if sess.HasHistory {
+			args = append([]string{"--continue"}, args...)
+		}
+		return args
+	}
+	
 	args := []string{"--dangerously-skip-permissions", "--print", prompt}
+	if sess.Model != "" {
+		// Prepend --model before other flags.
+		args = append([]string{"--model", sess.Model}, args...)
+	}
 	if sess.HasHistory {
 		// Prepend --continue to resume the last conversation.
 		args = append([]string{"--continue"}, args...)

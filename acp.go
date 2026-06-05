@@ -59,7 +59,8 @@ type agentInfo struct {
 }
 
 type sessionNewParams struct {
-	Cwd string `json:"cwd"`
+	Cwd   string `json:"cwd"`
+	Model string `json:"model,omitempty"`
 }
 
 type sessionNewResult struct {
@@ -68,7 +69,8 @@ type sessionNewResult struct {
 
 type sessionPromptParams struct {
 	SessionID string         `json:"sessionId"`
-	Messages  []promptMessage `json:"messages"`
+	Messages  []promptMessage `json:"messages,omitempty"`
+	Prompt    []contentBlock `json:"prompt,omitempty"`
 }
 
 type promptMessage struct {
@@ -194,7 +196,9 @@ func handleSessionNew(req rpcRequest) {
 		}
 	}
 
-	sess := store.NewSession(cwd)
+	model := params.Model
+
+	sess := store.NewSession(cwd, model)
 	writeResult(req.ID, sessionNewResult{SessionID: sess.ID})
 }
 
@@ -214,7 +218,7 @@ func handleSessionPrompt(req rpcRequest) {
 	}
 
 	// Extract text from the last user message.
-	prompt := extractPromptText(params.Messages)
+	prompt := extractPromptText(params)
 	if prompt == "" {
 		writeError(req.ID, -32602, "No text content found in messages")
 		return
@@ -247,19 +251,32 @@ func handleSessionPrompt(req rpcRequest) {
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
-func extractPromptText(messages []promptMessage) string {
-	// Use the last message with role "user".
-	for i := len(messages) - 1; i >= 0; i-- {
-		msg := messages[i]
-		if msg.Role != "user" {
-			continue
-		}
-		for _, block := range msg.Content {
+func extractPromptText(params sessionPromptParams) string {
+	// First, try the "prompt" format (simpler, used by some clients)
+	if len(params.Prompt) > 0 {
+		for _, block := range params.Prompt {
 			if block.Type == "text" && block.Text != "" {
 				return block.Text
 			}
 		}
 	}
+	
+	// Fall back to the "messages" format (standard ACP)
+	if len(params.Messages) > 0 {
+		// Use the last message with role "user".
+		for i := len(params.Messages) - 1; i >= 0; i-- {
+			msg := params.Messages[i]
+			if msg.Role != "user" {
+				continue
+			}
+			for _, block := range msg.Content {
+				if block.Type == "text" && block.Text != "" {
+					return block.Text
+				}
+			}
+		}
+	}
+	
 	return ""
 }
 

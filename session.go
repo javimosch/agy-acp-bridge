@@ -12,6 +12,7 @@ import (
 type Session struct {
 	ID        string
 	Cwd       string
+	Model     string
 	CreatedAt time.Time
 	// hasHistory tracks whether this session has sent at least one prompt,
 	// enabling --continue on subsequent prompts.
@@ -26,13 +27,14 @@ type SessionStore struct {
 var store = &SessionStore{}
 
 // NewSession creates a new session, replacing any existing one.
-func (s *SessionStore) NewSession(cwd string) *Session {
+func (s *SessionStore) NewSession(cwd string, model string) *Session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	sess := &Session{
 		ID:        generateSessionID(),
 		Cwd:       cwd,
+		Model:     model,
 		CreatedAt: time.Now(),
 	}
 	s.current = sess

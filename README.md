@@ -45,6 +45,7 @@ agy (via pty for TTY emulation)
 | **Single chunk per response** | agy `--print` is not streaming; emits one `agent_message_chunk` per response |
 | **`--continue` for continuity** | Resumes last conversation from second prompt onward |
 | **Single session only** | agy `--continue` only supports one active conversation per process |
+| **Automatic fallback for Thinking models** | Some "Thinking" models don't work with `--print`; automatically retries with `--prompt-interactive` |
 
 ---
 
@@ -117,6 +118,77 @@ Add to agent configuration:
 }
 ```
 
+#### acpx (Headless ACP Client)
+
+Install acpx:
+```bash
+npm install -g acpx
+```
+
+Configure acpx for agy-acp-bridge (`~/.acpx/config.json`):
+```json
+{
+  "defaultAgent": "agy",
+  "defaultPermissions": "approve-all",
+  "nonInteractivePermissions": "deny",
+  "authPolicy": "skip",
+  "agents": {
+    "agy": {
+      "command": "/path/to/agy-acp-bridge/agy-acp-bridge",
+      "args": ["acp"]
+    }
+  }
+}
+```
+
+Usage:
+```bash
+acpx sessions new
+acpx "what is 2+2?"
+```
+
+#### universe-agent-acp-client
+
+Install:
+```bash
+npm install -g @universe-agent/acp-client
+```
+
+Usage:
+```bash
+universe-agent-acp-client --command "/path/to/agy-acp-bridge/agy-acp-bridge" --args "acp" "what is 2+2?"
+```
+
+### Model Selection
+
+The bridge supports custom model selection via the `session/new` `model` parameter. Available models can be listed with `agy models`:
+
+```bash
+agy models
+```
+
+Example models:
+- `Claude Sonnet 4.6 (Thinking)`
+- `Claude Opus 4.6 (Thinking)`
+- `Gemini 3.5 Flash (Medium)`
+- `GPT-OSS 120B (Medium)`
+
+To use a specific model, include it in the `session/new` request:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "session/new",
+  "params": {
+    "cwd": "/path/to/project",
+    "model": "Claude Sonnet 4.6 (Thinking)"
+  }
+}
+```
+
+If no model is specified, agy uses its default model.
+
 ---
 
 ## ACP Methods Implemented
@@ -124,7 +196,7 @@ Add to agent configuration:
 | Method | Supported | Notes |
 |---|---|---|
 | `initialize` | ✅ | Returns capabilities, no auth required |
-| `session/new` | ✅ | Creates new session, stores `cwd` |
+| `session/new` | ✅ | Creates new session, stores `cwd` and optional `model` |
 | `session/load` | ❌ | Not supported (advertised as `false`) |
 | `session/prompt` | ✅ | Runs `agy --print` via pty, streams `agent_message_chunk` |
 | `session/cancel` | ⚠️ | Best-effort (agy `--print` is synchronous) |
@@ -176,6 +248,7 @@ agy-acp-bridge/
 3. **Tool approval** — Uses `--dangerously-skip-permissions` (auto-approves all tool calls)
 4. **Session loading** — Does not support `session/load` (agy conversation IDs not exposed)
 5. **Cancellation** — `session/cancel` is best-effort (agy `--print` is synchronous)
+6. **Thinking models** — Some "Thinking" models (e.g., Claude Opus 4.6) don't work with `--print` mode; bridge automatically retries with `--prompt-interactive` for these models
 
 ---
 
